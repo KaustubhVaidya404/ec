@@ -69,5 +69,60 @@ def allProductCategoryData(request):
         product_serializer = ProductSerializer(products, many=True)
         category_serializer = CategorySerializer(category, many=True)
         return Response({'products': product_serializer.data, 'category': category_serializer.data})
+
+# get view for product by name
+@api_view(['GET'])
+def getProductByName(request, name):
+    if request.method == 'GET':
+        products = Product.objects.filter(name=name)
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data)
+    else:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
     
+# update view for product
+@api_view(['PUT'])
+def updateProduct(request, id, name, description, price, stock, category):
+    if request.method == 'PUT':
+        product = Product.objects.get(id=id)
+        product.name = name
+        product.description = description
+        product.price = price
+        product.stock = stock
+        product.category = category
+        product.save()
+        return Response(status=status.HTTP_200_OK)
+    else:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
     
+# delete view for product
+@api_view(['DELETE'])
+def deleteProduct(request, id):
+    if request.method == 'DELETE':
+        product = Product.objects.get(id=id)
+        product.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    else:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    
+# update view for category
+@api_view(['PUT'])
+def updateCategory(request, id, name, description):
+    if request.method == 'PUT':
+        category = Category.objects.get(id=id)
+        category.name = name
+        category.description = description
+        category.save()
+        return Response(status=status.HTTP_200_OK)
+    else:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+# delete view for category
+@api_view(['DELETE'])
+def deleteCategory(request, id):
+    if request.method == 'DELETE':
+        category = Category.objects.get(id=id)
+        category.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    else:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
